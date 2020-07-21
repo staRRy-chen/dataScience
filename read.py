@@ -74,3 +74,5 @@ for data in allData:
             if data[2]!=currentQue:#检验题目与测试用例当前题目是否一致
                 f=read_code.open(testcases)
                 cases=json.load(f)
+            print(code)
+            print(cases)
