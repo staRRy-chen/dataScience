@@ -126,9 +126,13 @@ for root, dirs, files in os.walk(file_chdir):
         file_comp.append(file_tem)
         file_tem = []
 file_comp.sort(key=lambda x: (x[1], x[2], x[4], x[3]))
+print("success")
+print(str(file_comp[0][0]))
 
 for file in file_comp:
     if '.' not in file[3]:
+        continue
+    if '.zip' not in str(file[0]):
         continue
     if file[1] != id:
         id = int(file[1])
@@ -150,23 +154,29 @@ for file in file_comp:
     questionData.append(file[0])
     allData.append(questionData)
     questionData = []
-
+print('success')
 for data in allData:
     #print(data[4], data[5])
-    read_hey = zipfile.ZipFile(data[5])
-    zipname = read_hey.namelist()[0]
-    if '.zip' in zipname:
-        fp = read_hey.open(zipname)
-        read_code = zipfile.ZipFile(fp)
-        code = read_code.open(codename).read()  # 获取当前提交代码
-        if data[4] == 1:
-            if len(dic_list) != 0:
-                temp = copy.deepcopy(dic_list[-1])
-                temp['faceTime'] = faceTime
-                faceTime = 0
-                dic_singleQue.append(temp)
-            f = read_code.open(testcases)
-            cases = json.load(f)
+    if '.zip' not in str(data[5]):
+        continue
+    try:
+        read_hey = zipfile.ZipFile(data[5])
+        zipname = read_hey.namelist()[0]
+        if '.zip' in zipname:
+            fp = read_hey.open(zipname)
+            read_code = zipfile.ZipFile(fp)
+            code = read_code.open(codename).read()  # 获取当前提交代码
+            if data[4] == 1:
+                if len(dic_list) != 0:
+                    temp = copy.deepcopy(dic_list[-1])
+                    temp['faceTime'] = faceTime
+                    faceTime = 0
+                    dic_singleQue.append(temp)
+                f = read_code.open(testcases)
+                cases = json.load(f)
+    except:"zipfile.BadZipFile: File is not a zip file"
+
+
     for i in range(0, len(cases)):
         tempInput = ''.join(cases[i]['input'])
         tempOutput = ''.join(cases[i]['output'])
@@ -212,7 +222,7 @@ faceTime=0
 dic_singleQue.append(temp)
 for x in dic_list:
     del x['faceTime']
-
+print('success')
 if __name__ == '__main__':
     export_excel(dic_list,singleSubmit)
     export_excel(dic_singleQue,singleQue)
